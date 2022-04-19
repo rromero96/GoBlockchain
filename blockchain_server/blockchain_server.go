@@ -65,23 +65,26 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 			Length:       len(transactions),
 		})
 		io.WriteString(w, string(m[:]))
+
 	case http.MethodPost:
 		decoder := json.NewDecoder(req.Body)
 		var t blockchain.TransactionRequest
 		err := decoder.Decode(&t)
 		if err != nil {
-			log.Println("ERROR: %v", err)
+			log.Printf("ERROR: %v", err)
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
 		if !t.Validate() {
 			log.Println("ERROR: missing field(s)")
 			io.WriteString(w, string(utils.JsonStatus("fail")))
+			return
 		}
 		publicKey := utils.PublicKeyFromString(*t.SenderPublicKey)
 		signature := utils.SignatureFromString(*t.Signature)
 		bc := bcs.GetBlockchain()
-		isCreated := bc.CreateTransaction(*t.SenderBlockchainAddress, *t.RecipientBlockchainAddress, *t.Value, publicKey, signature)
+		isCreated := bc.CreateTransaction(*t.SenderBlockchainAddress,
+			*t.RecipientBlockchainAddress, *t.Value, publicKey, signature)
 
 		w.Header().Add("Content-Type", "application/json")
 		var m []byte

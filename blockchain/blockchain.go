@@ -65,8 +65,8 @@ func (bc *Blockchain) Print() {
 func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32, senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 	isTransacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, s)
 
-	//TODO
-	//sync
+	// TODO
+	// Sync
 
 	return isTransacted
 }
@@ -92,6 +92,7 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 		log.Println("ERROR: Verify Transaction")
 	}
 	return false
+
 }
 
 func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, s *utils.Signature, t *Transaction) bool {
