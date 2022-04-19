@@ -16,6 +16,14 @@ type Transaction struct {
 	value                      float32
 }
 
+type TransactionRequest struct {
+	SenderPrivateKey           *string `json:"sender_private_key"`
+	SenderBlockchainAddress    *string `json:"sender_blockchain_address"`
+	RecipientBlockchainAddress *string `json:"recipient_blockchain_address"`
+	SenderPublicKey            *string `json:"sender_public_key"`
+	Value                      *string `json:"value"`
+}
+
 func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey, sender string, recipient string, value float32) *Transaction {
 	return &Transaction{privateKey, publicKey, sender, recipient, value}
 }
@@ -37,4 +45,15 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 		Recipient: t.recipientBlockchainAddress,
 		Value:     t.value,
 	})
+}
+
+func (tr *TransactionRequest) Validate() bool {
+	if tr.SenderPrivateKey == nil ||
+		tr.SenderBlockchainAddress == nil ||
+		tr.RecipientBlockchainAddress == nil ||
+		tr.SenderPublicKey == nil ||
+		tr.Value == nil {
+		return false
+	}
+	return true
 }
