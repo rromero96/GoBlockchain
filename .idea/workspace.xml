@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="561f9c3c-80ff-4f41-8034-ce2a092253f0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blockchain/block.go" beforeDir="false" afterPath="$PROJECT_DIR$/blockchain/block.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blockchain/blockchain.go" beforeDir="false" afterPath="$PROJECT_DIR$/blockchain/blockchain.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blockchain_server/blockchain_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/blockchain_server/blockchain_server.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +42,7 @@
     <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
   </component>
-  <component name="RunManager" selected="Go Build.go build goblockchain/blockchain_server">
+  <component name="RunManager" selected="Go Build.go build goblockchain/wallet_server">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="GoBlockchain" />
       <working_directory value="$PROJECT_DIR$" />
@@ -80,8 +82,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build goblockchain/blockchain_server" />
         <item itemvalue="Go Build.go build goblockchain/wallet_server" />
+        <item itemvalue="Go Build.go build goblockchain/blockchain_server" />
       </list>
     </recent_temporary>
   </component>
