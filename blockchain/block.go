@@ -11,6 +11,7 @@ const (
 	MiningDifficulty = 3
 	MiningSender     = "THE BLOCKCHAIN"
 	MiningReward     = 1.0
+	MiningTimerSec   = 20
 )
 
 type Block struct {
