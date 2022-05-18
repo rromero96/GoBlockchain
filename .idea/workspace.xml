@@ -127,10 +127,10 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Go Build.blockchain_server 5001" />
       <item itemvalue="Go Build.blockchain_server 5002" />
       <item itemvalue="Go Build.blockchain_server 5003" />
       <item itemvalue="Go Build.cmd" />
-      <item itemvalue="Go Build.blockchain_server 5001" />
       <item itemvalue="Go Build.wallet_server 8080" />
     </list>
     <recent_temporary>
