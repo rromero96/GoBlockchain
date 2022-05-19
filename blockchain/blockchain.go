@@ -22,8 +22,8 @@ const (
 
 	PortRangeStart       = 5001
 	PortRangeEnd         = 5003
-	NeighborIpRangeStart = 1
-	NeighborIpRangeEnd   = 4
+	NeighborIpRangeStart = 0
+	NeighborIpRangeEnd   = 1
 	NeighborSyncTimeSec  = 20
 )
 
@@ -50,7 +50,7 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 func (bc *Blockchain) Run() {
 	bc.StartSyncNeighbors()
 	bc.ResolveConflicts()
-	//bc.StartMining()
+	bc.StartMining()
 }
 
 func (bc *Blockchain) SetNeighbors() {
