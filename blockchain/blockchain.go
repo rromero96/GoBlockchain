@@ -19,7 +19,7 @@ const (
 	MiningTimerSec   = 20
 
 	BlockchainPortRangeStart      = 5001
-	BlockchainPortRangeEnd        = 5003
+	BlockchainPortRangeEnd        = 5004
 	NeighborIpRangeStart          = 0
 	NeighborIpRangeEnd            = 1
 	BlockchainNeighborSyncTimeSec = 20
