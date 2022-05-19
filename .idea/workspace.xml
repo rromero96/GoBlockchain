@@ -19,6 +19,11 @@
   </component>
   <component name="GOROOT" url="file:///usr/local/Cellar/go/1.17.5/libexec" />
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -29,6 +34,14 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="recentNewPullRequestHead">
+      <RepoCoordinatesHolder>
+        <option name="owner" value="rromero96" />
+        <option name="repository" value="GoBlockchain" />
+      </RepoCoordinatesHolder>
+    </option>
   </component>
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="false" />
@@ -58,7 +71,7 @@
     <property name="last_opened_file_path" value="$USER_HOME$" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Go Build.blockchain_server 5003">
+  <component name="RunManager" selected="Go Build.wallet_server 8080">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="GoBlockchain" />
       <working_directory value="$PROJECT_DIR$" />
@@ -135,8 +148,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.blockchain_server 5001" />
         <item itemvalue="Go Build.wallet_server 8080" />
+        <item itemvalue="Go Build.blockchain_server 5001" />
       </list>
     </recent_temporary>
   </component>
