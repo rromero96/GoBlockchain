@@ -71,7 +71,7 @@
     <property name="last_opened_file_path" value="$USER_HOME$" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Go Build.wallet_server 8081">
+  <component name="RunManager" selected="Go Build.blockchain_server 5003">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="GoBlockchain" />
       <working_directory value="$PROJECT_DIR$" />
