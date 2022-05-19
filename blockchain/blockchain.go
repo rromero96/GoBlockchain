@@ -110,7 +110,8 @@ func (bc *Blockchain) Print() {
 	fmt.Printf("%s\n", strings.Repeat("*", 25))
 }
 
-func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32, senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,
+	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 	isTransacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, s)
 
 	if isTransacted {
@@ -129,10 +130,12 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, value f
 			log.Printf("%v", resp)
 		}
 	}
+
 	return isTransacted
 }
 
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32, senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32,
+	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 	t := NewTransaction(sender, recipient, value)
 
 	if sender == MiningSender {
@@ -216,7 +219,7 @@ func (bc *Blockchain) ResolveConflicts() bool {
 	maxLength := len(bc.chain)
 
 	for _, n := range bc.neighbors {
-		endpoint := fmt.Sprint("http://%s/chain", n)
+		endpoint := fmt.Sprintf("http://%s/chain", n)
 		resp, _ := http.Get(endpoint)
 		if resp.StatusCode == 200 {
 			var bcResp Blockchain
@@ -234,10 +237,9 @@ func (bc *Blockchain) ResolveConflicts() bool {
 
 	if longestChain != nil {
 		bc.chain = longestChain
-		log.Printf("Resolve conflicts replaced")
+		log.Printf("Resolve confilicts replaced")
 		return true
 	}
-
 	log.Printf("Resolve conflicts not replaced")
 	return false
 }
@@ -254,7 +256,16 @@ func (bc *Blockchain) Mining() bool {
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
-	log.Printf("action= %v , status= %v", mining, success)
+	log.Println("action=mining, status=success")
+
+	for _, n := range bc.neighbors {
+		endpoint := fmt.Sprintf("http://%s/consensus", n)
+		client := &http.Client{}
+		req, _ := http.NewRequest("PUT", endpoint, nil)
+		resp, _ := client.Do(req)
+		log.Printf("%v", resp)
+	}
+
 	return true
 }
 
@@ -297,4 +308,5 @@ func (bc *Blockchain) StartSyncNeighbors() {
 
 func (bc *Blockchain) Run() {
 	bc.StartSyncNeighbors()
+	bc.ResolveConflicts()
 }
