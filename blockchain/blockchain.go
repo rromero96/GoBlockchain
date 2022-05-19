@@ -192,7 +192,7 @@ func (bc *Blockchain) Run() {
 }
 
 func (bc *Blockchain) SetNeighbors() {
-	bc.neighbors = utils.FindNeighbors(utils.GetHost(), bc.port, NeighborIpRangeStart, NeighborIpRangeEnd, BlockchainPortRangeEnd, BlockchainPortRangeEnd)
+	bc.neighbors = utils.FindNeighbors(utils.GetHost(), bc.port, NeighborIpRangeStart, NeighborIpRangeEnd, BlockchainPortRangeStart, BlockchainPortRangeEnd)
 	log.Printf("%v", bc.neighbors)
 }
 
