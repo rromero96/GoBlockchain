@@ -20,16 +20,11 @@ const (
 	MiningReward     = 1.0
 	MiningTimerSec   = 20
 
-	BlockchainPortRangeStart      = 5001
-	BlockchainPortRangeEnd        = 5004
-	NeighborIpRangeStart          = 0
-	NeighborIpRangeEnd            = 1
-	BlockchainNeighborSyncTimeSec = 20
-)
-
-var (
-	mining  = "mining"
-	success = "success"
+	PortRangeStart       = 5001
+	PortRangeEnd         = 5003
+	NeighborIpRangeStart = 0
+	NeighborIpRangeEnd   = 1
+	NeighborSyncTimeSec  = 20
 )
 
 type Blockchain struct {
@@ -50,6 +45,27 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	bc.CreateBlock(0, b.Hash())
 	bc.port = port
 	return bc
+}
+
+func (bc *Blockchain) Run() {
+	bc.StartSyncNeighbors()
+	bc.ResolveConflicts()
+}
+
+func (bc *Blockchain) SetNeighbors() {
+	bc.neighbors = utils.FindNeighbors(utils.GetHost(), bc.port, NeighborIpRangeStart, NeighborIpRangeEnd, PortRangeStart, PortRangeEnd)
+	log.Printf("%v", bc.neighbors)
+}
+
+func (bc *Blockchain) SyncNeighbors() {
+	bc.muxNeighbors.Lock()
+	defer bc.muxNeighbors.Unlock()
+	bc.SetNeighbors()
+}
+
+func (bc *Blockchain) StartSyncNeighbors() {
+	bc.SyncNeighbors()
+	_ = time.AfterFunc(time.Second*NeighborSyncTimeSec, bc.StartSyncNeighbors)
 }
 
 func (bc *Blockchain) Chain() []*Block {
@@ -110,7 +126,8 @@ func (bc *Blockchain) Print() {
 	fmt.Printf("%s\n", strings.Repeat("*", 25))
 }
 
-func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32, senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,
+	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 	isTransacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, s)
 
 	if isTransacted {
@@ -129,10 +146,12 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, value f
 			log.Printf("%v", resp)
 		}
 	}
+
 	return isTransacted
 }
 
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32, senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32,
+	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 	t := NewTransaction(sender, recipient, value)
 
 	if sender == MiningSender {
@@ -141,6 +160,7 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 	}
 
 	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+
 		/*
 			if bc.CalculateTotalAmount(sender) < value {
 				log.Println("ERROR: Not enough balance in a wallet")
@@ -216,7 +236,7 @@ func (bc *Blockchain) ResolveConflicts() bool {
 	maxLength := len(bc.chain)
 
 	for _, n := range bc.neighbors {
-		endpoint := fmt.Sprint("http://%s/chain", n)
+		endpoint := fmt.Sprintf("http://%s/chain", n)
 		resp, _ := http.Get(endpoint)
 		if resp.StatusCode == 200 {
 			var bcResp Blockchain
@@ -234,10 +254,9 @@ func (bc *Blockchain) ResolveConflicts() bool {
 
 	if longestChain != nil {
 		bc.chain = longestChain
-		log.Printf("Resolve conflicts replaced")
+		log.Printf("Resolve confilicts replaced")
 		return true
 	}
-
 	log.Printf("Resolve conflicts not replaced")
 	return false
 }
@@ -246,15 +265,20 @@ func (bc *Blockchain) Mining() bool {
 	bc.mux.Lock()
 	defer bc.mux.Unlock()
 
-	if len(bc.transactionPool) == 0 {
-		return false
-	}
-
 	bc.AddTransaction(MiningSender, bc.blockchainAddress, MiningReward, nil, nil)
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
-	log.Printf("action= %v , status= %v", mining, success)
+	log.Println("action=mining, status=success")
+
+	for _, n := range bc.neighbors {
+		endpoint := fmt.Sprintf("http://%s/consensus", n)
+		client := &http.Client{}
+		req, _ := http.NewRequest("PUT", endpoint, nil)
+		resp, _ := client.Do(req)
+		log.Printf("%v", resp)
+	}
+
 	return true
 }
 
@@ -277,24 +301,4 @@ func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
 		}
 	}
 	return totalAmount
-}
-
-func (bc *Blockchain) SetNeighbors() {
-	bc.neighbors = utils.FindNeighbors(utils.GetHost(), bc.port, NeighborIpRangeStart, NeighborIpRangeEnd, BlockchainPortRangeStart, BlockchainPortRangeEnd)
-	log.Printf("%v", bc.neighbors)
-}
-
-func (bc *Blockchain) SyncNeighbors() {
-	bc.muxNeighbors.Lock()
-	defer bc.muxNeighbors.Unlock()
-	bc.SetNeighbors()
-}
-
-func (bc *Blockchain) StartSyncNeighbors() {
-	bc.SyncNeighbors()
-	_ = time.AfterFunc(time.Second*BlockchainNeighborSyncTimeSec, bc.StartSyncNeighbors)
-}
-
-func (bc *Blockchain) Run() {
-	bc.StartSyncNeighbors()
 }
